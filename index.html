@@ -3,42 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Photobox Maker 4R</title>
+    <title>Photobox Studio Pro HD</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📸 Ultimate Photobox Maker</h1>
-            <p>Pilih Layout, Hias, dan Cetak 4R</p>
+            <h1>📸 Photobox Studio Pro</h1>
+            <p>Geser foto untuk atur posisi, tarik pojok untuk zoom.</p>
         </header>
         
         <div class="main-layout">
             <aside class="controls">
                 <div class="control-section">
-                    <h3>1. Pilih Layout Frame</h3>
+                    <h3>1. Layout & Media</h3>
                     <div class="layout-selector">
                         <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
-                        <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
+                        <button onclick="changeLayout('layout-grid')">📱 Grid</button>
                         <button onclick="changeLayout('layout-double')">🖼️ Double</button>
                     </div>
-                </div>
-
-                <div class="control-section">
-                    <h3>2. Upload Media</h3>
                     <label class="btn-upload">📸 Pilih Foto<input type="file" id="imageInput" accept="image/*" multiple></label>
                     <label class="btn-upload secondary">🖼️ Logo PNG<input type="file" id="logoInput" accept="image/*"></label>
                 </div>
 
                 <div class="control-section">
-                    <h3>3. Desain & Filter</h3>
-                    <select id="bgSelect" onchange="changeBgType(this.value)">
+                    <h3>2. Frame & Filter</h3>
+                    <select onchange="changeBg(this.value)">
                         <option value="white">Putih Polos</option>
                         <option value="black">Hitam Elegan</option>
-                        <option value="polka-blue">Polkadot Biru</option>
-                        <option value="polka-pink">Polkadot Pink</option>
+                        <option value="polka-pink">Pink Polkadot</option>
                         <option value="grad-sunset">Sunset Glow</option>
-                        <option value="grad-candy">Sweet Candy</option>
                     </select>
                     <select id="filterSelect" onchange="applyFilter()">
                         <option value="none">Tanpa Filter</option>
@@ -48,22 +42,20 @@
                 </div>
 
                 <div class="control-section">
-                    <h3>4. Tambah Stiker</h3>
+                    <h3>3. Stiker</h3>
                     <div class="sticker-bank">
-                        <button onclick="addSticker('❤️')">❤️</button>
-                        <button onclick="addSticker('⭐')">⭐</button>
-                        <button onclick="addSticker('🌸')">🌸</button>
-                        <button onclick="addSticker('🎀')">🎀</button>
-                        <button onclick="addSticker('🐶')">🐶</button>
+                        <button onclick="addSticker('❤️')">❤️</button><button onclick="addSticker('✨')">✨</button>
+                        <button onclick="addSticker('🌸')">🌸</button><button onclick="addSticker('🎀')">🎀</button>
                     </div>
                 </div>
 
-                <button id="downloadBtn" class="download-btn">💾 Simpan Hasil 4R</button>
+                <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD (4R)</button>
             </aside>
 
             <main class="preview-area">
                 <div id="captureArea" class="photo-strip white layout-strip">
-                    <div id="photoContainer"></div>
+                    <div id="photoContainer">
+                        </div>
                     <div id="logoWrapper">
                         <img id="userLogo" src="" style="display:none;">
                         <p id="defaultBrand">Digital Photobox</p>
