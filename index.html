@@ -3,70 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Photobox Pro</title>
+    <title>Ultimate Photobox Maker 4R</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎨 DIY Photo Strip Maker</h1>
-            <p>Upload, hias dengan stiker, dan unduh!</p>
+            <h1>📸 Ultimate Photobox Maker</h1>
+            <p>Pilih Layout, Hias, dan Cetak 4R</p>
         </header>
         
         <div class="main-layout">
             <aside class="controls">
                 <div class="control-section">
-                    <h3>1. Upload Foto & Logo</h3>
-                    <label class="btn-upload">
-                        📸 Pilih 3-4 Foto
-                        <input type="file" id="imageInput" accept="image/*" multiple>
-                    </label>
-                    <label class="btn-upload secondary">
-                        🖼️ Upload Logo PNG
-                        <input type="file" id="logoInput" accept="image/*">
-                    </label>
+                    <h3>1. Pilih Layout Frame</h3>
+                    <div class="layout-selector">
+                        <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
+                        <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
+                        <button onclick="changeLayout('layout-double')">🖼️ Double</button>
+                    </div>
                 </div>
 
                 <div class="control-section">
-                    <h3>2. Desain Frame</h3>
+                    <h3>2. Upload Media</h3>
+                    <label class="btn-upload">📸 Pilih Foto<input type="file" id="imageInput" accept="image/*" multiple></label>
+                    <label class="btn-upload secondary">🖼️ Logo PNG<input type="file" id="logoInput" accept="image/*"></label>
+                </div>
+
+                <div class="control-section">
+                    <h3>3. Desain & Filter</h3>
                     <select id="bgSelect" onchange="changeBgType(this.value)">
                         <option value="white">Putih Polos</option>
                         <option value="black">Hitam Elegan</option>
                         <option value="polka-blue">Polkadot Biru</option>
                         <option value="polka-pink">Polkadot Pink</option>
                         <option value="grad-sunset">Sunset Glow</option>
-                        <option value="grad-ocean">Ocean Breeze</option>
                         <option value="grad-candy">Sweet Candy</option>
                     </select>
-
                     <select id="filterSelect" onchange="applyFilter()">
                         <option value="none">Tanpa Filter</option>
                         <option value="grayscale(100%)">B&W Retro</option>
                         <option value="sepia(60%)">Vintage</option>
-                        <option value="brightness(1.2) contrast(1.1)">Fresh</option>
                     </select>
                 </div>
 
                 <div class="control-section">
-                    <h3>3. Tambah Stiker</h3>
+                    <h3>4. Tambah Stiker</h3>
                     <div class="sticker-bank">
                         <button onclick="addSticker('❤️')">❤️</button>
                         <button onclick="addSticker('⭐')">⭐</button>
-                        <button onclick="addSticker('🌈')">🌈</button>
                         <button onclick="addSticker('🌸')">🌸</button>
+                        <button onclick="addSticker('🎀')">🎀</button>
                         <button onclick="addSticker('🐶')">🐶</button>
-                        <button onclick="addSticker('✨')">✨</button>
                     </div>
-                    <small>*Klik stiker untuk perbesar, drag untuk geser</small>
                 </div>
 
-                <button id="downloadBtn" class="download-btn">💾 Simpan Gambar (HD)</button>
+                <button id="downloadBtn" class="download-btn">💾 Simpan Hasil 4R</button>
             </aside>
 
             <main class="preview-area">
-                <div id="captureArea" class="photo-strip white">
-                    <div id="photoContainer">
-                        </div>
+                <div id="captureArea" class="photo-strip white layout-strip">
+                    <div id="photoContainer"></div>
                     <div id="logoWrapper">
                         <img id="userLogo" src="" style="display:none;">
                         <p id="defaultBrand">Digital Photobox</p>
