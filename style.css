@@ -1,0 +1,112 @@
+body {
+    background-color: #f4f7f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container { max-width: 900px; margin: 0 auto; text-align: center; }
+
+.main-layout {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* Sidebar Controls */
+.controls {
+    width: 300px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.control-section { margin-bottom: 25px; }
+h3 { font-size: 16px; margin-bottom: 10px; color: #555; }
+
+.btn-upload {
+    display: block;
+    background: #4a90e2;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.btn-upload input { display: none; }
+.secondary { background: #6c757d; }
+
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.sticker-bank button {
+    font-size: 24px;
+    background: none;
+    border: 1px solid #eee;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Photo Strip Style */
+.photo-strip {
+    position: relative;
+    width: 280px;
+    padding: 20px 20px 40px 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    min-height: 400px;
+    overflow: hidden; /* Menjaga stiker tetap di dalam */
+}
+
+/* Background Types */
+.white { background-color: #ffffff; }
+.black { background-color: #1a1a1a; color: white; }
+.polka-blue { background-color: #e1f5fe; background-image: radial-gradient(#03a9f4 10%, transparent 11%); background-size: 20px 20px; }
+.polka-pink { background-color: #fce4ec; background-image: radial-gradient(#f06292 10%, transparent 11%); background-size: 20px 20px; }
+.grad-sunset { background: linear-gradient(180deg, #ff9a9e 0%, #fad0c4 100%); }
+.grad-ocean { background: linear-gradient(180deg, #2af598 0%, #009efd 100%); }
+.grad-candy { background: linear-gradient(180deg, #ee9ca7 0%, #ffdde1 100%); }
+
+#photoContainer img {
+    width: 100%;
+    margin-bottom: 15px;
+    display: block;
+    cursor: grab;
+    transition: filter 0.3s;
+}
+
+#photoContainer img.dragging { opacity: 0.5; border: 2px dashed #4a90e2; }
+
+/* Sticker & Logo */
+.sticker {
+    position: absolute;
+    cursor: move;
+    z-index: 100;
+    user-select: none;
+    touch-action: none;
+}
+
+#logoWrapper { margin-top: 10px; text-align: center; }
+#userLogo { max-width: 60px; height: auto; }
+
+.download-btn {
+    width: 100%;
+    padding: 15px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
