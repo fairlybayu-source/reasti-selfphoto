@@ -28,8 +28,19 @@ select { width: 100%; padding: 10px; margin-top: 8px; border-radius: 6px; border
 #photoContainer { flex: 1; display: flex; gap: 10px; z-index: 2; }
 .photo-box { position: relative; width: 100%; height: 100%; overflow: hidden; background: #eee; border-radius: 2px; }
 .photo-box img { 
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-    min-width: 100%; min-height: 100%; object-fit: cover; cursor: move; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    /* Gunakan translate saja, scale akan diatur oleh JS */
+    transform: translate(-50%, -50%); 
+    /* Menggunakan width 100% agar pas dengan lebar kotak saat awal */
+    width: 100%; 
+    height: auto; 
+    min-width: unset; /* Hapus batasan min-width sebelumnya */
+    min-height: unset; /* Hapus batasan min-height sebelumnya */
+    object-fit: contain; /* Ubah ke contain agar foto terlihat utuh di awal */
+    cursor: move; 
+} 
 }
 .resizer { 
     position: absolute; right: 0; bottom: 0; width: 22px; height: 22px; 
