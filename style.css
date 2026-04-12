@@ -1,76 +1,68 @@
-:root { --primary: #4a90e2; --dark: #1a1a1a; }
-body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-.container { max-width: 1200px; margin: 0 auto; }
+body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; text-align: center; }
+.main-layout { display: flex; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; }
 
-/* Main Layout */
-.main-layout { display: flex; gap: 40px; justify-content: center; align-items: flex-start; }
-.controls { width: 320px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-.control-section { margin-bottom: 25px; text-align: left; }
+/* Sidebar */
+.controls { width: 300px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: left; }
+.control-section { margin-bottom: 20px; }
 .layout-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.layout-selector button { padding: 10px; cursor: pointer; border: 1px solid #ddd; background: white; border-radius: 6px; font-size: 13px; }
-.layout-selector button.special { grid-column: span 2; background: #fff5f5; border-color: #ff9a9e; font-weight: bold; }
-.btn-upload { display: block; background: var(--primary); color: white; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; margin-top: 10px; }
+.layout-selector button { padding: 10px; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 6px; }
+.layout-selector button.special { grid-column: span 2; background: #fdf2f2; border-color: #ff9a9e; font-weight: bold; }
+.btn-upload { display: block; background: #4a90e2; color: white; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; margin-top: 10px; }
 .btn-upload input { display: none; }
 .secondary { background: #6c757d; font-size: 12px; }
-select { width: 100%; padding: 10px; margin-top: 8px; border-radius: 6px; border: 1px solid #ddd; }
 
 /* Photo Strip 4R */
 .photo-strip {
     position: relative;
-    width: 380px; height: 570px; /* Rasio 2:3 */
-    padding: 20px; box-sizing: border-box;
-    background: white; overflow: hidden;
+    width: 380px; height: 570px;
+    padding: 20px; background: white;
     display: flex; flex-direction: column;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    overflow: hidden; box-sizing: border-box;
 }
 
-/* Layout Definitions */
 #photoContainer { flex: 1; display: flex; gap: 10px; z-index: 2; }
-.photo-box { position: relative; width: 100%; height: 100%; overflow: hidden; background: #eee; border-radius: 2px; }
+
+/* Photo Box & Image Fit */
+.photo-box { position: relative; width: 100%; height: 100%; overflow: hidden; background: #eee; }
 .photo-box img { 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    /* Gunakan translate saja, scale akan diatur oleh JS */
-    transform: translate(-50%, -50%); 
-    /* Menggunakan width 100% agar pas dengan lebar kotak saat awal */
-    width: 100%; 
-    height: auto; 
-    min-width: unset; /* Hapus batasan min-width sebelumnya */
-    min-height: unset; /* Hapus batasan min-height sebelumnya */
-    object-fit: contain; /* Ubah ke contain agar foto terlihat utuh di awal */
-    cursor: move; 
-} 
+    position: absolute; top: 50%; left: 50%; 
+    transform: translate(-50%, -50%) scale(1);
+    width: 100%; height: auto; /* Fit awal agar tidak terlalu zoom */
+    object-fit: contain; cursor: move;
 }
+
 .resizer { 
-    position: absolute; right: 0; bottom: 0; width: 22px; height: 22px; 
-    background: rgba(0,0,0,0.3); clip-path: polygon(100% 0, 100% 100%, 0 100%); 
+    position: absolute; right: 0; bottom: 0; width: 25px; height: 25px; 
+    background: rgba(0,0,0,0.2); clip-path: polygon(100% 0, 100% 100%, 0 100%); 
     cursor: nwse-resize; z-index: 10; 
 }
 
-/* Specific Layout Logic */
+/* Layout Variations */
 .layout-strip #photoContainer { flex-direction: column; }
 .layout-grid #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); padding-top: 40px; }
 .layout-double #photoContainer { flex-direction: column; gap: 15px; }
 
-/* Khusus Grand Opening (Template 5) */
-.layout-grand-opening #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 40px 10px 60px 10px; }
-.layout-grand-opening .split-bg { position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: #222; display: block; }
-.layout-grand-opening .header-text { position: absolute; top: 20px; width: 100%; left: 0; text-align: center; font-size: 14px; letter-spacing: 2px; z-index: 5; color: #333; }
-.layout-grand-opening .dots-left, .layout-grand-opening .dots-right { position: absolute; top: 20px; font-size: 10px; z-index: 5; }
-.layout-grand-opening .dots-left { left: 20px; color: white; }
-.layout-grand-opening .dots-right { right: 20px; color: #333; }
-.layout-grand-opening #logoWrapper { color: white; }
+/* Grand Opening Template Logic */
+.layout-grand-opening .split-bg { position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: #222; display: none; }
+.layout-grand-opening.photo-strip { background: white; }
+.layout-grand-opening #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 50px 10px; }
+.layout-grand-opening .split-bg { display: block; }
+.layout-grand-opening .header-text, .layout-grand-opening .dots-left, .layout-grand-opening .dots-right { display: block; }
 
-/* Backgrounds */
+/* Hidden Template Elements */
+.header-text, .dots-left, .dots-right { display: none; position: absolute; z-index: 5; top: 20px; }
+.header-text { width: 100%; text-align: center; left: 0; letter-spacing: 2px; font-size: 14px; }
+.dots-left { left: 20px; color: white; }
+.dots-right { right: 20px; color: #333; }
+
+/* Styling */
 .white { background: #fff; }
 .black { background: #1a1a1a; color: #fff; }
 .polka-pink { background-color: #fce4ec; background-image: radial-gradient(#f06292 8%, transparent 9%); background-size: 15px 15px; }
-.grad-sunset { background: linear-gradient(180deg, #ff9a9e, #fad0c4); }
-
-/* Logo & Sticker */
-#logoWrapper { height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
-#userLogo { max-height: 40px; margin-bottom: 5px; }
+#logoWrapper { height: 60px; display: flex; align-items: center; justify-content: center; z-index: 5; flex-direction: column; }
+#userLogo { max-height: 40px; }
 .branding-text { font-family: serif; font-style: italic; font-size: 18px; }
-.sticker { position: absolute; cursor: move; z-index: 100; font-size: 45px; user-select: none; }
-.download-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.sticker { position: absolute; cursor: move; z-index: 100; font-size: 45px; }
+.download-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
