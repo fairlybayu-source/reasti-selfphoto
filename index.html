@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photobox Studio Pro HD</title>
+    <title>Ultimate Photobox Studio HD</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📸 Photobox Studio Pro</h1>
-            <p>Geser foto untuk atur posisi, tarik pojok untuk zoom.</p>
+            <h1>📸 Ultimate Photobox Maker</h1>
+            <p>Pilih Layout, Geser Foto untuk Atur Posisi, dan Simpan HD</p>
         </header>
         
         <div class="main-layout">
             <aside class="controls">
                 <div class="control-section">
-                    <h3>1. Layout & Media</h3>
+                    <h3>1. Pilih Layout Template</h3>
                     <div class="layout-selector">
                         <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
-                        <button onclick="changeLayout('layout-grid')">📱 Grid</button>
+                        <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
                         <button onclick="changeLayout('layout-double')">🖼️ Double</button>
+                        <button onclick="changeLayout('layout-grand-opening')" class="special">✨ Grand Opening</button>
                     </div>
                     <label class="btn-upload">📸 Pilih Foto<input type="file" id="imageInput" accept="image/*" multiple></label>
-                    <label class="btn-upload secondary">🖼️ Logo PNG<input type="file" id="logoInput" accept="image/*"></label>
                 </div>
 
                 <div class="control-section">
-                    <h3>2. Frame & Filter</h3>
-                    <select onchange="changeBg(this.value)">
+                    <h3>2. Frame & Desain</h3>
+                    <select id="bgSelect" onchange="changeBg(this.value)">
                         <option value="white">Putih Polos</option>
                         <option value="black">Hitam Elegan</option>
                         <option value="polka-pink">Pink Polkadot</option>
@@ -39,13 +39,15 @@
                         <option value="grayscale(100%)">B&W Retro</option>
                         <option value="sepia(60%)">Vintage</option>
                     </select>
+                    <label class="btn-upload secondary">🖼️ Ganti Logo PNG<input type="file" id="logoInput" accept="image/*"></label>
                 </div>
 
                 <div class="control-section">
-                    <h3>3. Stiker</h3>
+                    <h3>3. Tambah Stiker</h3>
                     <div class="sticker-bank">
                         <button onclick="addSticker('❤️')">❤️</button><button onclick="addSticker('✨')">✨</button>
                         <button onclick="addSticker('🌸')">🌸</button><button onclick="addSticker('🎀')">🎀</button>
+                        <button onclick="addSticker('🐶')">🐶</button>
                     </div>
                 </div>
 
@@ -54,11 +56,16 @@
 
             <main class="preview-area">
                 <div id="captureArea" class="photo-strip white layout-strip">
-                    <div id="photoContainer">
-                        </div>
+                    <div class="split-bg"></div>
+                    <div class="header-text">GRAND OPENING</div>
+                    <div class="dots-left">●●●</div>
+                    <div class="dots-right">●●●</div>
+
+                    <div id="photoContainer"></div>
+
                     <div id="logoWrapper">
                         <img id="userLogo" src="" style="display:none;">
-                        <p id="defaultBrand">Digital Photobox</p>
+                        <div class="branding-text">Reastic Studio</div>
                     </div>
                 </div>
             </main>
