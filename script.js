@@ -1,3 +1,7 @@
+const photoContainer = document.getElementById('photoContainer');
+const captureArea = document.getElementById('captureArea');
+const templateImg = document.getElementById('templateOverlay');
+
 document.getElementById('magicScan').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -7,69 +11,110 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
         const img = new Image();
         img.src = event.target.result;
         img.onload = function() {
+            // 1. Reset Container
             photoContainer.innerHTML = '';
-            captureArea.className = 'photo-strip auto-detect-mode';
             templateImg.src = img.src;
             templateImg.style.display = 'block';
-            
-            // Scan area transparan
-            detectTransparentAreas(img);
+
+            // 2. Jalankan deteksi presisi
+            runPrecisionScan(img);
         };
     };
     reader.readAsDataURL(file);
 });
 
-function detectTransparentAreas(img) {
+function runPrecisionScan(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Sesuaikan resolusi scan dengan ukuran container 4R
-    canvas.width = 380; 
+    // Gunakan ukuran tetap 4R sebagai basis koordinat (380x570)
+    canvas.width = 380;
     canvas.height = 570;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
+    
+    // Gambar template ke canvas (auto-scale ke 380x570)
+    ctx.drawImage(imgSource, 0, 0, canvas.width, canvas.height);
+    
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     const visited = new Uint8Array(canvas.width * canvas.height);
-    const threshold = 10; // Toleransi transparansi (0-255)
 
-    // Gunakan step lebih kecil (5px) untuk akurasi tinggi
+    // Scan setiap 5 pixel untuk performa
     for (let y = 0; y < canvas.height; y += 5) {
         for (let x = 0; x < canvas.width; x += 5) {
-            const idx = (y * canvas.width + x) * 4;
-            const alpha = imageData[idx + 3];
+            const index = (y * canvas.width + x) * 4;
+            const alpha = imageData[index + 3];
 
-            // Jika menemukan pixel transparan dan belum pernah diproses
-            if (alpha < threshold && !visited[y * canvas.width + x]) {
+            // Jika transparan (Alpha < 50) dan belum dikunjungi
+            if (alpha < 50 && !visited[y * canvas.width + x]) {
                 let minX = x, maxX = x, minY = y, maxY = y;
                 
-                // Cari batas area transparan yang terhubung (Flood Fill sederhana)
-                let stack = [[x, y]];
-                while(stack.length > 0) {
-                    let [currX, currY] = stack.pop();
-                    if (currX < 0 || currX >= canvas.width || currY < 0 || currY >= canvas.height) continue;
-                    if (visited[currY * canvas.width + currX]) continue;
+                // Cari batas area transparan
+                let queue = [[x, y]];
+                visited[y * canvas.width + x] = 1;
 
-                    const cIdx = (currY * canvas.width + currX) * 4;
-                    if (imageData[cIdx + 3] < threshold) {
-                        visited[currY * canvas.width + currX] = 1;
-                        minX = Math.min(minX, currX);
-                        maxX = Math.max(maxX, currX);
-                        minY = Math.min(minY, currY);
-                        maxY = Math.max(maxY, currY);
+                while(queue.length > 0) {
+                    let [cx, cy] = queue.shift();
+                    minX = Math.min(minX, cx); maxX = Math.max(maxX, cx);
+                    minY = Math.min(minY, cy); maxY = Math.max(maxY, cy);
 
-                        // Cek tetangga (step diperbesar untuk performa scan)
-                        stack.push([currX + 15, currY], [currX, currY + 15]);
-                    }
+                    // Cek tetangga kanan dan bawah saja (untuk kecepatan)
+                    let checkPoints = [[cx + 5, cy], [cx, cy + 5]];
+                    checkPoints.forEach(([nx, ny]) => {
+                        if (nx < canvas.width && ny < canvas.height && !visited[ny * canvas.width + nx]) {
+                            const nIdx = (ny * canvas.width + nx) * 4;
+                            if (imageData[nIdx + 3] < 50) {
+                                visited[ny * canvas.width + nx] = 1;
+                                queue.push([nx, ny]);
+                            }
+                        }
+                    });
                 }
 
-                // Buat kotak jika ukurannya masuk akal (minimal 50px)
-                const width = maxX - minX;
-                const height = maxY - minY;
-                if (width > 50 && height > 50) {
-                    // Beri sedikit offset negatif agar foto masuk sedikit di bawah bingkai (overlap)
-                    createPhotoBox(true, minX - 2, minY - 2, width + 4, height + 4);
+                // Buat kotak jika area cukup besar
+                const w = maxX - minX;
+                const h = maxY - minY;
+                if (w > 30 && h > 30) {
+                    // Tambahkan padding 1px agar tidak ada celah putih
+                    createPhotoBox(minX - 1, minY - 1, w + 2, h + 2);
                 }
             }
         }
     }
 }
+
+function createPhotoBox(x, y, w, h) {
+    const box = document.createElement('div');
+    box.className = 'photo-box';
+    box.style.left = x + 'px';
+    box.style.top = y + 'px';
+    box.style.width = w + 'px';
+    box.style.height = h + 'px';
+
+    box.onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                box.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.style.width = "100%"; // Fit ke kotak
+                box.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    };
+    photoContainer.appendChild(box);
+}
+
+// Fitur Simpan
+document.getElementById('downloadBtn').onclick = () => {
+    html2canvas(captureArea, { scale: 3 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Photobox-Precision.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+};
