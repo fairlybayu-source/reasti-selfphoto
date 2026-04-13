@@ -3,64 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Photobox Studio HD</title>
+    <title>Photobox AI Precision</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>📸 Ultimate Photobox Maker</h1>
-            <p>Upload Template PNG Transparan atau Pilih Layout Standar</p>
-        </header>
-        
-        <div class="main-layout">
-            <aside class="controls">
-                <div class="control-section">
-                    <h3>1. Magic Auto-Detect</h3>
-                    <label class="btn-upload magic">✨ Upload & Scan Template
-                        <input type="file" id="magicScan" accept="image/png">
-                    </label>
-                    <p class="hint">*Gunakan file PNG dengan lubang transparan.</p>
-                </div>
+        <aside class="controls">
+            <h2>⚙️ Panel Kontrol</h2>
+            <div class="control-section">
+                <h3>Magic Auto-Detect</h3>
+                <label class="btn-upload magic">✨ Scan Template PNG
+                    <input type="file" id="magicScan" accept="image/png">
+                </label>
+            </div>
+            <div class="control-section">
+                <h3>Layout Standar</h3>
+                <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
+                <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
+            </div>
+            <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD</button>
+        </aside>
 
-                <div class="control-section">
-                    <h3>2. Layout Standar</h3>
-                    <div class="layout-selector">
-                        <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
-                        <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
-                        <button onclick="changeLayout('layout-grand-opening')">✨ Grand Opening</button>
-                        <button onclick="changeLayout('layout-party')" class="party-btn">🎉 Party Mode</button>
-                    </div>
-                </div>
-
-                <div class="control-section">
-                    <h3>3. Desain & Branding</h3>
-                    <select onchange="changeBg(this.value)">
-                        <option value="white">Putih Polos</option>
-                        <option value="black">Hitam Elegan</option>
-                        <option value="polka-pink">Pink Polkadot</option>
-                    </select>
-                    <label class="btn-upload secondary">🖼️ Ganti Logo PNG<input type="file" id="logoInput" accept="image/*"></label>
-                </div>
-
-                <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD (4R)</button>
-            </aside>
-
-            <main class="preview-area">
-                <div id="captureArea" class="photo-strip white layout-strip">
-                    <img id="templateOverlay">
-                    <div class="split-bg"></div>
-                    <div class="header-text">GRAND OPENING</div>
-                    <div id="photoContainer"></div>
-                    <div id="logoWrapper">
-                        <img id="userLogo" src="" style="display:none;">
-                        <div class="branding-text">Reastic Studio</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <main class="preview-area">
+            <div id="captureArea" class="photo-strip white">
+                <img id="templateOverlay">
+                <div id="photoContainer"></div>
+            </div>
+        </main>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
