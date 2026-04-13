@@ -1,68 +1,49 @@
-body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
 .container { max-width: 1200px; margin: 0 auto; text-align: center; }
-.main-layout { display: flex; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; }
+.main-layout { display: flex; gap: 30px; justify-content: center; align-items: flex-start; }
 
 /* Sidebar */
-.controls { width: 300px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: left; }
-.control-section { margin-bottom: 20px; }
+.controls { width: 320px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: left; }
+.control-section { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
 .layout-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.layout-selector button { padding: 10px; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 6px; }
-.layout-selector button.special { grid-column: span 2; background: #fdf2f2; border-color: #ff9a9e; font-weight: bold; }
-.btn-upload { display: block; background: #4a90e2; color: white; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; margin-top: 10px; }
-.btn-upload input { display: none; }
-.secondary { background: #6c757d; font-size: 12px; }
+.btn-upload { display: block; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; color: white; font-weight: bold; }
+.magic { background: #9b59b6; }
+.secondary { background: #6c757d; font-size: 12px; margin-top: 10px; }
+.hint { font-size: 10px; color: #888; margin-top: 5px; }
+.party-btn { background: #f1c40f !important; color: #333 !important; }
 
-/* Photo Strip 4R */
+/* Capture Area 4R */
 .photo-strip {
-    position: relative;
-    width: 380px; height: 570px;
-    padding: 20px; background: white;
-    display: flex; flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    overflow: hidden; box-sizing: border-box;
+    position: relative; width: 380px; height: 570px;
+    background: white; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); box-sizing: border-box;
 }
 
-#photoContainer { flex: 1; display: flex; gap: 10px; z-index: 2; }
+#photoContainer { flex: 1; display: flex; gap: 10px; position: relative; z-index: 1; }
+#templateOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: none; }
 
-/* Photo Box & Image Fit */
+/* Photo Box Logic */
 .photo-box { position: relative; width: 100%; height: 100%; overflow: hidden; background: #eee; }
 .photo-box img { 
-    position: absolute; top: 50%; left: 50%; 
-    transform: translate(-50%, -50%) scale(1);
-    width: 100%; height: auto; /* Fit awal agar tidak terlalu zoom */
-    object-fit: contain; cursor: move;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1);
+    width: 100%; height: auto; object-fit: contain; cursor: move;
 }
 
 .resizer { 
     position: absolute; right: 0; bottom: 0; width: 25px; height: 25px; 
-    background: rgba(0,0,0,0.2); clip-path: polygon(100% 0, 100% 100%, 0 100%); 
-    cursor: nwse-resize; z-index: 10; 
+    background: rgba(0,0,0,0.3); clip-path: polygon(100% 0, 100% 100%, 0 100%); 
+    cursor: nwse-resize; z-index: 15; 
 }
 
-/* Layout Variations */
-.layout-strip #photoContainer { flex-direction: column; }
-.layout-grid #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); padding-top: 40px; }
-.layout-double #photoContainer { flex-direction: column; gap: 15px; }
+/* Auto-Detect Mode */
+.auto-detect-mode #photoContainer { display: block !important; width: 100%; height: 100%; }
+.auto-detect-mode .photo-box { position: absolute; border: 1px dashed #ccc; }
 
-/* Grand Opening Template Logic */
-.layout-grand-opening .split-bg { position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: #222; display: none; }
-.layout-grand-opening.photo-strip { background: white; }
-.layout-grand-opening #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 50px 10px; }
-.layout-grand-opening .split-bg { display: block; }
-.layout-grand-opening .header-text, .layout-grand-opening .dots-left, .layout-grand-opening .dots-right { display: block; }
+/* Existing Layouts */
+.layout-strip #photoContainer { flex-direction: column; padding: 20px; }
+.layout-grid #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); padding: 40px 15px; }
+.layout-grand-opening .split-bg { position: absolute; width: 50%; height: 100%; background: #222; z-index: 0; display: none; }
+.layout-grand-opening.photo-strip .split-bg { display: block; }
+.layout-grand-opening #photoContainer { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 60px 15px; }
 
-/* Hidden Template Elements */
-.header-text, .dots-left, .dots-right { display: none; position: absolute; z-index: 5; top: 20px; }
-.header-text { width: 100%; text-align: center; left: 0; letter-spacing: 2px; font-size: 14px; }
-.dots-left { left: 20px; color: white; }
-.dots-right { right: 20px; color: #333; }
-
-/* Styling */
-.white { background: #fff; }
-.black { background: #1a1a1a; color: #fff; }
-.polka-pink { background-color: #fce4ec; background-image: radial-gradient(#f06292 8%, transparent 9%); background-size: 15px 15px; }
-#logoWrapper { height: 60px; display: flex; align-items: center; justify-content: center; z-index: 5; flex-direction: column; }
-#userLogo { max-height: 40px; }
-.branding-text { font-family: serif; font-style: italic; font-size: 18px; }
-.sticker { position: absolute; cursor: move; z-index: 100; font-size: 45px; }
-.download-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.download-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
