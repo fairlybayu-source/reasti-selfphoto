@@ -22,27 +22,56 @@ document.getElementById('magicScan').onchange = function(e) {
 function detectHoles(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 380; canvas.height = 570;
+    canvas.width = 380; 
+    canvas.height = 570;
     ctx.drawImage(imgSource, 0, 0, canvas.width, canvas.height);
     
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
     const visited = new Uint8Array(canvas.width * canvas.height);
 
-    for (let y = 0; y < canvas.height; y += 10) {
-        for (let x = 0; x < canvas.width; x += 10) {
+    // Gunakan ambang batas (threshold) yang lebih ketat untuk transparansi
+    const threshold = 10; 
+
+    for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
             const idx = (y * canvas.width + x) * 4;
-            if (data[idx + 3] < 50 && !visited[y * canvas.width + x]) {
-                let x1=x, x2=x, y1=y, y2=y;
-                for(let ty=y; ty<y+300 && ty<canvas.height; ty+=10) {
-                    for(let tx=x; tx<x+300 && tx<canvas.width; tx+=10) {
-                        if(data[(ty*canvas.width+tx)*4+3] < 50) {
-                            x1=Math.min(x1,tx); x2=Math.max(x2,tx);
-                            y1=Math.min(y1,ty); y2=Math.max(y2,ty);
-                            visited[ty*canvas.width+tx] = 1;
+            const alpha = data[idx + 3];
+
+            // Jika menemukan piksel benar-benar transparan dan belum dikunjungi
+            if (alpha < threshold && !visited[y * canvas.width + x]) {
+                let minX = x, maxX = x, minY = y, maxY = y;
+                let queue = [[x, y]];
+                visited[y * canvas.width + x] = 1;
+
+                // Algoritma Flood Fill untuk mengunci satu area kotak secara utuh
+                while (queue.length > 0) {
+                    let [cx, cy] = queue.shift();
+                    
+                    // Cek 4 arah (atas, bawah, kiri, kanan)
+                    const neighbors = [[cx+1, cy], [cx-1, cy], [cx, cy+1], [cx, cy-1]];
+                    for (let [nx, ny] of neighbors) {
+                        if (nx >= 0 && nx < canvas.width && ny >= 0 && ny < canvas.height) {
+                            const nIdx = (ny * canvas.width + nx) * 4;
+                            if (!visited[ny * canvas.width + nx] && data[nIdx + 3] < threshold) {
+                                visited[ny * canvas.width + nx] = 1;
+                                minX = Math.min(minX, nx);
+                                maxX = Math.max(maxX, nx);
+                                minY = Math.min(minY, ny);
+                                maxY = Math.max(maxY, ny);
+                                queue.push([nx, ny]);
+                            }
                         }
                     }
                 }
-                if((x2-x1) > 30) createPhotoBox(x1-2, y1-2, (x2-x1)+4, (y2-y1)+4);
+
+                // Validasi ukuran: abaikan jika hanya noise kecil (kurang dari 30px)
+                const w = maxX - minX;
+                const h = maxY - minY;
+                if (w > 30 && h > 30) {
+                    // Buat kotak foto dengan sedikit offset (1px) agar masuk ke bawah bingkai
+                    createPhotoBox(minX - 1, minY - 1, w + 2, h + 2);
+                }
             }
         }
     }
