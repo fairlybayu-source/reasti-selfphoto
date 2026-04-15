@@ -1,119 +1,129 @@
 const photoContainer = document.getElementById('photoContainer');
 const captureArea = document.getElementById('captureArea');
-const templateImg = document.getElementById('templateOverlay');
+const templateOverlay = document.getElementById('templateOverlay');
 
-document.getElementById('magicScan').addEventListener('change', function(e) {
+// 1. SCAN TEMPLATE & DETEKSI LUBANG
+document.getElementById('magicScan').onchange = function(e) {
     const file = e.target.files[0];
-    if (!file) return;
-
     const reader = new FileReader();
     reader.onload = function(event) {
         const img = new Image();
         img.src = event.target.result;
         img.onload = function() {
-            // 1. Reset Container
-            photoContainer.innerHTML = '';
-            templateImg.src = img.src;
-            templateImg.style.display = 'block';
-
-            // 2. Jalankan deteksi presisi
-            runPrecisionScan(img);
+            photoContainer.innerHTML = ''; // Reset
+            templateOverlay.src = img.src;
+            templateOverlay.style.display = 'block';
+            detectHoles(img);
         };
     };
     reader.readAsDataURL(file);
-});
+};
 
-function runPrecisionScan(imgSource) {
+function detectHoles(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
-    // Gunakan ukuran tetap 4R sebagai basis koordinat (380x570)
-    canvas.width = 380;
-    canvas.height = 570;
-    
-    // Gambar template ke canvas (auto-scale ke 380x570)
+    canvas.width = 380; canvas.height = 570;
     ctx.drawImage(imgSource, 0, 0, canvas.width, canvas.height);
     
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     const visited = new Uint8Array(canvas.width * canvas.height);
 
-    // Scan setiap 5 pixel untuk performa
-    for (let y = 0; y < canvas.height; y += 5) {
-        for (let x = 0; x < canvas.width; x += 5) {
-            const index = (y * canvas.width + x) * 4;
-            const alpha = imageData[index + 3];
-
-            // Jika transparan (Alpha < 50) dan belum dikunjungi
-            if (alpha < 50 && !visited[y * canvas.width + x]) {
-                let minX = x, maxX = x, minY = y, maxY = y;
-                
-                // Cari batas area transparan
-                let queue = [[x, y]];
-                visited[y * canvas.width + x] = 1;
-
-                while(queue.length > 0) {
-                    let [cx, cy] = queue.shift();
-                    minX = Math.min(minX, cx); maxX = Math.max(maxX, cx);
-                    minY = Math.min(minY, cy); maxY = Math.max(maxY, cy);
-
-                    // Cek tetangga kanan dan bawah saja (untuk kecepatan)
-                    let checkPoints = [[cx + 5, cy], [cx, cy + 5]];
-                    checkPoints.forEach(([nx, ny]) => {
-                        if (nx < canvas.width && ny < canvas.height && !visited[ny * canvas.width + nx]) {
-                            const nIdx = (ny * canvas.width + nx) * 4;
-                            if (imageData[nIdx + 3] < 50) {
-                                visited[ny * canvas.width + nx] = 1;
-                                queue.push([nx, ny]);
-                            }
+    for (let y = 0; y < canvas.height; y += 10) {
+        for (let x = 0; x < canvas.width; x += 10) {
+            const idx = (y * canvas.width + x) * 4;
+            if (data[idx + 3] < 50 && !visited[y * canvas.width + x]) {
+                let x1=x, x2=x, y1=y, y2=y;
+                for(let ty=y; ty<y+300 && ty<canvas.height; ty+=10) {
+                    for(let tx=x; tx<x+300 && tx<canvas.width; tx+=10) {
+                        if(data[(ty*canvas.width+tx)*4+3] < 50) {
+                            x1=Math.min(x1,tx); x2=Math.max(x2,tx);
+                            y1=Math.min(y1,ty); y2=Math.max(y2,ty);
+                            visited[ty*canvas.width+tx] = 1;
                         }
-                    });
+                    }
                 }
-
-                // Buat kotak jika area cukup besar
-                const w = maxX - minX;
-                const h = maxY - minY;
-                if (w > 30 && h > 30) {
-                    // Tambahkan padding 1px agar tidak ada celah putih
-                    createPhotoBox(minX - 1, minY - 1, w + 2, h + 2);
-                }
+                if((x2-x1) > 30) createPhotoBox(x1-2, y1-2, (x2-x1)+4, (y2-y1)+4);
             }
         }
     }
 }
 
+// 2. BUAT KOTAK FOTO & LOGIKA INTERAKSI
 function createPhotoBox(x, y, w, h) {
     const box = document.createElement('div');
     box.className = 'photo-box';
-    box.style.left = x + 'px';
-    box.style.top = y + 'px';
-    box.style.width = w + 'px';
-    box.style.height = h + 'px';
+    box.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px;`;
 
-    box.onclick = () => {
+    box.onclick = (e) => {
+        if (box.classList.contains('has-photo') && e.target.tagName !== 'DIV') return;
         const input = document.createElement('input');
         input.type = 'file';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
+        input.onchange = (f) => {
             const reader = new FileReader();
             reader.onload = (ev) => {
                 box.innerHTML = '';
+                box.classList.add('has-photo'); // GARIS PUTUS HILANG
+                
                 const img = document.createElement('img');
                 img.src = ev.target.result;
-                img.style.width = "100%"; // Fit ke kotak
+                
+                const resizer = document.createElement('div');
+                resizer.className = 'resizer';
+                
+                applyDragAndZoom(img, resizer);
+                
                 box.appendChild(img);
+                box.appendChild(resizer);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(f.target.files[0]);
         };
         input.click();
     };
     photoContainer.appendChild(box);
 }
 
-// Fitur Simpan
+// 3. FUNGSI DRAG & ZOOM HD
+function applyDragAndZoom(img, resizer) {
+    let isDragging = false, isResizing = false;
+    let startX, startY, scale = 1;
+
+    img.onmousedown = (e) => {
+        isDragging = true;
+        startX = e.clientX - img.offsetLeft;
+        startY = e.clientY - img.offsetTop;
+        e.preventDefault();
+    };
+
+    resizer.onmousedown = (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        e.preventDefault(); e.stopPropagation();
+    };
+
+    document.onmousemove = (e) => {
+        if (isDragging) {
+            img.style.left = (e.clientX - startX) + "px";
+            img.style.top = (e.clientY - startY) + "px";
+        }
+        if (isResizing) {
+            let delta = (e.clientX - startX) * 0.005;
+            scale = Math.max(0.1, scale + delta);
+            img.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+    };
+
+    document.onmouseup = () => { isDragging = false; isResizing = false; };
+}
+
+// 4. DOWNLOAD HD
 document.getElementById('downloadBtn').onclick = () => {
-    html2canvas(captureArea, { scale: 3 }).then(canvas => {
+    const resizers = document.querySelectorAll('.resizer');
+    resizers.forEach(r => r.style.display = 'none'); // Sembunyikan panah saat save
+
+    html2canvas(captureArea, { scale: 3, useCORS: true }).then(canvas => {
+        resizers.forEach(r => r.style.display = 'block');
         const link = document.createElement('a');
-        link.download = 'Photobox-Precision.png';
+        link.download = 'Photobox-Final.png';
         link.href = canvas.toDataURL();
         link.click();
     });
