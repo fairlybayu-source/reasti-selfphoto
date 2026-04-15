@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photobox AI Precision</title>
+    <title>Photobox Studio Pro HD</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <aside class="controls">
-            <h2>⚙️ Panel Kontrol</h2>
+            <h2>⚙️ Control Panel</h2>
             <div class="control-section">
                 <h3>Magic Auto-Detect</h3>
                 <label class="btn-upload magic">✨ Scan Template PNG
@@ -17,17 +17,15 @@
                 </label>
             </div>
             <div class="control-section">
-                <h3>Layout Standar</h3>
-                <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
-                <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
+                <h3>Simpan Hasil</h3>
+                <button id="downloadBtn" class="download-btn">💾 DOWNLOAD HD (4R)</button>
             </div>
-            <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD</button>
         </aside>
 
         <main class="preview-area">
-            <div id="captureArea" class="photo-strip white">
-                <img id="templateOverlay">
+            <div id="captureArea" class="photo-strip">
                 <div id="photoContainer"></div>
+                <img id="templateOverlay">
             </div>
         </main>
     </div>
