@@ -7,46 +7,55 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <aside class="controls">
-            <h2>⚙️ Panel Kontrol</h2>
+    <div class="app-wrapper">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>📸 Photobox<span>PRO</span></h1>
+                <p>AI Precision Engine v2.0</p>
+            </div>
             
-            <div class="control-section">
-                <h3>1. Template PNG</h3>
-                <label class="btn-upload magic">✨ Scan Template
+            <div class="control-group">
+                <label class="section-title">1. SETUP TEMPLATE</label>
+                <label class="upload-label">
+                    <span>✨ Scan PNG Transparan</span>
                     <input type="file" id="magicScan" accept="image/png">
                 </label>
             </div>
 
-            <div class="control-section edit-panel" id="editPanel" style="display: none;">
-                <h3>🎨 Edit Foto Terpilih</h3>
-                <label>Zoom / Scale:</label>
-                <input type="range" id="imgScale" min="0.5" max="3" step="0.05" value="1">
+            <div id="editPanel" class="control-group active-editor" style="display: none;">
+                <label class="section-title">2. PHOTO EDITOR</label>
                 
-                <label>Brightness:</label>
-                <input type="range" id="imgBright" min="0" max="200" value="100">
-                
-                <label>Contrast:</label>
-                <input type="range" id="imgContrast" min="0" max="200" value="100">
-                
-                <label>Saturation:</label>
-                <input type="range" id="imgSat" min="0" max="200" value="100">
-                
-                <p style="font-size: 11px; color: #666; margin-top: 10px;">
-                    💡 Tips: Klik foto lalu geser langsung untuk mengatur posisi.
-                </p>
+                <div class="slider-item">
+                    <div class="slider-info"><span>🔍 Zoom</span> <b id="val-scale">1.0</b></div>
+                    <input type="range" id="imgScale" min="0.1" max="4" step="0.01" value="1">
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-info"><span>☀️ Brightness</span> <b id="val-bright">100%</b></div>
+                    <input type="range" id="imgBright" min="0" max="200" value="100">
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-info"><span>🌓 Contrast</span> <b id="val-contrast">100%</b></div>
+                    <input type="range" id="imgContrast" min="0" max="200" value="100">
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-info"><span>🌈 Saturation</span> <b id="val-sat">100%</b></div>
+                    <input type="range" id="imgSat" min="0" max="200" value="100">
+                </div>
             </div>
 
-            <div class="control-section">
-                <h3>2. Selesai</h3>
-                <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD</button>
+            <div class="control-group">
+                <label class="section-title">3. EXPORT</label>
+                <button id="downloadBtn" class="primary-btn">💾 SIMPAN HASIL HD</button>
             </div>
         </aside>
 
-        <main class="preview-area">
-            <div id="captureArea" class="photo-strip">
+        <main class="viewport">
+            <div id="captureArea" class="canvas-print">
                 <div id="photoContainer"></div>
-                <img id="templateOverlay">
+                <img id="templateOverlay" alt="Overlay">
             </div>
         </main>
     </div>
