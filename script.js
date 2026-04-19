@@ -69,8 +69,8 @@ function createPhotoBox(x, y, w, h) {
     box.style.cssText = `
         left: ${x - gapFix}px; 
         top: ${y - gapFix}px; 
-        width: ${w + (gapFix * 2)}px; 
-        height: ${h + (gapFix * 2)}px;
+        width: ${w + (gapFix * 3)}px; 
+        height: ${h + (gapFix * 3)}px;
     `;
     
     box.onclick = (e) => {
