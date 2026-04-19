@@ -80,11 +80,18 @@ function triggerImageUpload(box) {
             box.innerHTML = '';
             const img = document.createElement('img');
             img.src = ev.target.result;
-            img.dataset.scale = 1; img.dataset.bright = 100;
-            img.dataset.contrast = 100; img.dataset.sat = 100;
-            img.dataset.x = 0; img.dataset.y = 0;
+
+            // --- OTOMATIS PRESET CLEAN WHITE ---
+            img.dataset.scale = 1; 
+            img.dataset.bright = 115; // Lebih cerah
+            img.dataset.contrast = 110; // Lebih tajam
+            img.dataset.sat = 95;      // Kulit lebih bersih
+            img.dataset.x = 0; 
+            img.dataset.y = 0;
+
             box.appendChild(img);
             
+            // Tambahkan tombol hapus
             const btn = document.createElement('button');
             btn.className = 'remove-photo-btn';
             btn.innerHTML = '×';
@@ -95,7 +102,10 @@ function triggerImageUpload(box) {
                 editPanel.style.display = 'none';
             };
             box.appendChild(btn);
+            
+            // Aktifkan pilihan dan terapkan filter
             selectPhoto(img);
+            applyStyles(); 
         };
         reader.readAsDataURL(e.target.files[0]);
     };
@@ -154,8 +164,14 @@ window.addEventListener('mouseup', () => isDragging = false);
 
 // PRINT & DOWNLOAD ENGINE
 document.getElementById('printBtn').onclick = () => {
+    // Hilangkan outline biru seleksi
     document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
-    window.print();
+
+    // Berikan jeda 500ms agar browser selesai me-render gambar sebelum print
+    setTimeout(() => {
+        window.print();
+    }, 500);
+};
 };
 
 document.getElementById('downloadBtn').onclick = () => {
