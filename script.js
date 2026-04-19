@@ -64,7 +64,7 @@ function createPhotoBox(x, y, w, h) {
     // OFFSET PRESISI: 
     // Kita kurangi x & y sebesar 1px, dan tambah w & h sebesar 2px
     // Ini memastikan foto "masuk" sedikit ke bawah area berwarna templat
-    const gapFix = 2; 
+    const gapFix = 3; 
     
     box.style.cssText = `
         left: ${x - gapFix}px; 
