@@ -52,9 +52,10 @@ body {
 
 .viewport { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); }
 
+/* AREA CETAK 4R (4x6 Inch) */
 .canvas-print {
     position: relative;
-    width: 380px; height: 570px;
+    width: 384px; height: 576px; /* Rasio 4R dalam px */
     background: #fff;
     box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
 }
@@ -78,10 +79,20 @@ body {
 
 .photo-box:hover .remove-photo-btn { display: flex; }
 
-/* ATURAN CETAK */
+/* KUSTOMISASI PRINT EPSON L8050 */
 @media print {
-    .sidebar, .remove-photo-btn { display: none !important; }
-    body { background: white; }
-    .viewport { padding: 0; }
-    .canvas-print { box-shadow: none; position: absolute; left: 0; top: 0; }
+    @page {
+        size: 102mm 152mm; /* 4R Exact */
+        margin: 0;
+    }
+    body { background: white !important; }
+    .sidebar, .remove-photo-btn, .viewport { display: none !important; }
+    .app-wrapper { display: block; }
+    .canvas-print {
+        position: fixed;
+        left: 0; top: 0;
+        width: 102mm;
+        height: 152mm;
+        box-shadow: none !important;
+    }
 }
