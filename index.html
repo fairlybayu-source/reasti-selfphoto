@@ -5,56 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photobox Studio Pro HD</title>
     <link rel="stylesheet" href="style.css">
-</head><!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photobox AI Precision</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <aside class="controls">
             <h2>⚙️ Panel Kontrol</h2>
+            
             <div class="control-section">
-                <h3>Magic Auto-Detect</h3>
-                <label class="btn-upload magic">✨ Scan Template PNG
+                <h3>1. Template PNG</h3>
+                <label class="btn-upload magic">✨ Scan Template
                     <input type="file" id="magicScan" accept="image/png">
                 </label>
             </div>
-            <div class="control-section">
-                <h3>Layout Standar</h3>
-                <button onclick="changeLayout('layout-strip')">🎞️ Strip</button>
-                <button onclick="changeLayout('layout-grid')">📱 Grid 2x3</button>
-            </div>
-            <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD</button>
-        </aside>
 
-        <main class="preview-area">
-            <div id="captureArea" class="photo-strip white">
-                <img id="templateOverlay">
-                <div id="photoContainer"></div>
+            <div class="control-section edit-panel" id="editPanel" style="display: none;">
+                <h3>🎨 Edit Foto Terpilih</h3>
+                <label>Zoom / Scale:</label>
+                <input type="range" id="imgScale" min="0.5" max="3" step="0.05" value="1">
+                
+                <label>Brightness:</label>
+                <input type="range" id="imgBright" min="0" max="200" value="100">
+                
+                <label>Contrast:</label>
+                <input type="range" id="imgContrast" min="0" max="200" value="100">
+                
+                <label>Saturation:</label>
+                <input type="range" id="imgSat" min="0" max="200" value="100">
+                
+                <p style="font-size: 11px; color: #666; margin-top: 10px;">
+                    💡 Tips: Klik foto lalu geser langsung untuk mengatur posisi.
+                </p>
             </div>
-        </main>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
-<body>
-    <div class="container">
-        <aside class="controls">
-            <h2>⚙️ Control Panel</h2>
+
             <div class="control-section">
-                <h3>Magic Auto-Detect</h3>
-                <label class="btn-upload magic">✨ Scan Template PNG
-                    <input type="file" id="magicScan" accept="image/png">
-                </label>
-            </div>
-            <div class="control-section">
-                <h3>Simpan Hasil</h3>
-                <button id="downloadBtn" class="download-btn">💾 DOWNLOAD HD (4R)</button>
+                <h3>2. Selesai</h3>
+                <button id="downloadBtn" class="download-btn">💾 SIMPAN HASIL HD</button>
             </div>
         </aside>
 
@@ -65,6 +50,7 @@
             </div>
         </main>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
