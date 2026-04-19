@@ -1,7 +1,13 @@
 const photoContainer = document.getElementById('photoContainer');
-const captureArea = document.getElementById('captureArea');
 const templateImg = document.getElementById('templateOverlay');
+const captureArea = document.getElementById('captureArea');
+const editPanel = document.getElementById('editPanel');
 
+let selectedImg = null;
+let isDragging = false;
+let startX, startY, initialLeft, initialTop;
+
+// 1. SCAN TEMPLATE
 document.getElementById('magicScan').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -11,12 +17,9 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
         const img = new Image();
         img.src = event.target.result;
         img.onload = function() {
-            // 1. Reset Container
             photoContainer.innerHTML = '';
             templateImg.src = img.src;
             templateImg.style.display = 'block';
-
-            // 2. Jalankan deteksi presisi
             runPrecisionScan(img);
         };
     };
@@ -26,28 +29,17 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
 function runPrecisionScan(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
-    // Gunakan ukuran tetap 4R sebagai basis koordinat (380x570)
-    canvas.width = 380;
-    canvas.height = 570;
-    
-    // Gambar template ke canvas (auto-scale ke 380x570)
+    canvas.width = 380; canvas.height = 570;
     ctx.drawImage(imgSource, 0, 0, canvas.width, canvas.height);
     
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     const visited = new Uint8Array(canvas.width * canvas.height);
 
-    // Scan setiap 5 pixel untuk performa
     for (let y = 0; y < canvas.height; y += 5) {
         for (let x = 0; x < canvas.width; x += 5) {
-            const index = (y * canvas.width + x) * 4;
-            const alpha = imageData[index + 3];
-
-            // Jika transparan (Alpha < 50) dan belum dikunjungi
-            if (alpha < 50 && !visited[y * canvas.width + x]) {
+            const idx = (y * canvas.width + x) * 4;
+            if (imageData[idx + 3] < 50 && !visited[y * canvas.width + x]) {
                 let minX = x, maxX = x, minY = y, maxY = y;
-                
-                // Cari batas area transparan
                 let queue = [[x, y]];
                 visited[y * canvas.width + x] = 1;
 
@@ -56,65 +48,113 @@ function runPrecisionScan(imgSource) {
                     minX = Math.min(minX, cx); maxX = Math.max(maxX, cx);
                     minY = Math.min(minY, cy); maxY = Math.max(maxY, cy);
 
-                    // Cek tetangga kanan dan bawah saja (untuk kecepatan)
-                    let checkPoints = [[cx + 5, cy], [cx, cy + 5]];
-                    checkPoints.forEach(([nx, ny]) => {
+                    [[cx+5, cy], [cx, cy+5]].forEach(([nx, ny]) => {
                         if (nx < canvas.width && ny < canvas.height && !visited[ny * canvas.width + nx]) {
-                            const nIdx = (ny * canvas.width + nx) * 4;
-                            if (imageData[nIdx + 3] < 50) {
+                            if (imageData[(ny * canvas.width + nx) * 4 + 3] < 50) {
                                 visited[ny * canvas.width + nx] = 1;
                                 queue.push([nx, ny]);
                             }
                         }
                     });
                 }
-
-                // Buat kotak jika area cukup besar
-                const w = maxX - minX;
-                const h = maxY - minY;
-                if (w > 30 && h > 30) {
-                    // Tambahkan padding 1px agar tidak ada celah putih
-                    createPhotoBox(minX - 1, minY - 1, w + 2, h + 2);
-                }
+                if ((maxX - minX) > 30) createPhotoBox(minX - 1, minY - 1, (maxX - minX) + 2, (maxY - minY) + 2);
             }
         }
     }
 }
 
+// 2. CREATE BOX & UPLOAD FOTO
 function createPhotoBox(x, y, w, h) {
     const box = document.createElement('div');
     box.className = 'photo-box';
-    box.style.left = x + 'px';
-    box.style.top = y + 'px';
-    box.style.width = w + 'px';
-    box.style.height = h + 'px';
+    box.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px;`;
 
     box.onclick = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                box.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = ev.target.result;
-                img.style.width = "100%"; // Fit ke kotak
-                box.appendChild(img);
+        const currentImg = box.querySelector('img');
+        if (currentImg) {
+            selectImage(currentImg);
+        } else {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = (e) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    // Default Data
+                    img.dataset.scale = 1; img.dataset.bright = 100;
+                    img.dataset.contrast = 100; img.dataset.sat = 100;
+                    box.innerHTML = '';
+                    box.appendChild(img);
+                    selectImage(img);
+                    setupDrag(img);
+                };
+                reader.readAsDataURL(e.target.files[0]);
             };
-            reader.readAsDataURL(file);
-        };
-        input.click();
+            input.click();
+        }
     };
     photoContainer.appendChild(box);
 }
 
-// Fitur Simpan
+// 3. EDITING & FILTERS
+function selectImage(img) {
+    selectedImg = img;
+    editPanel.style.display = 'block';
+    
+    // Sync UI Sliders
+    document.getElementById('imgScale').value = img.dataset.scale;
+    document.getElementById('imgBright').value = img.dataset.bright;
+    document.getElementById('imgContrast').value = img.dataset.contrast;
+    document.getElementById('imgSat').value = img.dataset.sat;
+
+    document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
+    img.parentElement.style.outline = '2px solid #00d4ff';
+}
+
+['imgScale', 'imgBright', 'imgContrast', 'imgSat'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+        if (!selectedImg) return;
+        const scale = document.getElementById('imgScale').value;
+        const b = document.getElementById('imgBright').value;
+        const c = document.getElementById('imgContrast').value;
+        const s = document.getElementById('imgSat').value;
+
+        selectedImg.dataset.scale = scale;
+        selectedImg.dataset.bright = b;
+        selectedImg.dataset.contrast = c;
+        selectedImg.dataset.sat = s;
+
+        selectedImg.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        selectedImg.style.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+    });
+});
+
+// 4. DRAG LOGIC
+function setupDrag(img) {
+    img.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        selectedImg = img;
+        startX = e.clientX; startY = e.clientY;
+        initialLeft = img.offsetLeft; initialTop = img.offsetTop;
+        e.preventDefault();
+    });
+}
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDragging || !selectedImg) return;
+    selectedImg.style.left = (initialLeft + (e.clientX - startX)) + 'px';
+    selectedImg.style.top = (initialTop + (e.clientY - startY)) + 'px';
+});
+
+window.addEventListener('mouseup', () => isDragging = false);
+
+// 5. DOWNLOAD
 document.getElementById('downloadBtn').onclick = () => {
-    html2canvas(captureArea, { scale: 3 }).then(canvas => {
+    html2canvas(captureArea, { scale: 3, useCORS: true }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'Photobox-Precision.png';
-        link.href = canvas.toDataURL();
+        link.download = 'Photobox-HD.png';
+        link.href = canvas.toDataURL('image/png');
         link.click();
     });
 };
