@@ -83,15 +83,14 @@ function triggerImageUpload(box) {
 
             // --- OTOMATIS PRESET CLEAN WHITE ---
             img.dataset.scale = 1; 
-            img.dataset.bright = 115; // Lebih cerah
-            img.dataset.contrast = 110; // Lebih tajam
-            img.dataset.sat = 95;      // Kulit lebih bersih
+            img.dataset.bright = 115; 
+            img.dataset.contrast = 110; 
+            img.dataset.sat = 95;      
             img.dataset.x = 0; 
             img.dataset.y = 0;
 
             box.appendChild(img);
             
-            // Tambahkan tombol hapus
             const btn = document.createElement('button');
             btn.className = 'remove-photo-btn';
             btn.innerHTML = '×';
@@ -103,7 +102,6 @@ function triggerImageUpload(box) {
             };
             box.appendChild(btn);
             
-            // Aktifkan pilihan dan terapkan filter
             selectPhoto(img);
             applyStyles(); 
         };
@@ -162,30 +160,32 @@ window.addEventListener('mousemove', (e) => {
 
 window.addEventListener('mouseup', () => isDragging = false);
 
-// PRINT & DOWNLOAD ENGINE
+// PRINT ENGINE
 document.getElementById('printBtn').onclick = () => {
-    // Hilangkan outline biru seleksi
     document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
-
-    // Berikan jeda 500ms agar browser selesai me-render gambar sebelum print
     setTimeout(() => {
         window.print();
     }, 500);
 };
-};
 
+// DOWNLOAD ENGINE
 document.getElementById('downloadBtn').onclick = () => {
     const btn = document.getElementById('downloadBtn');
     btn.innerText = 'PROCESSING...';
     const xBtns = document.querySelectorAll('.remove-photo-btn');
     xBtns.forEach(b => b.style.display = 'none');
+    document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
 
-    html2canvas(document.getElementById('captureArea'), { scale: 4, useCORS: true }).then(canvas => {
+    html2canvas(document.getElementById('captureArea'), { 
+        scale: 4, 
+        useCORS: true,
+        logging: false
+    }).then(canvas => {
         const link = document.createElement('a');
         link.download = `REASTIC_STUDIO_${Date.now()}.png`;
-        link.href = canvas.toDataURL();
+        link.href = canvas.toDataURL('image/png');
         link.click();
         btn.innerText = '💾 SIMPAN HASIL HD';
-        xBtns.forEach(b => b.style.display = '');
+        xBtns.forEach(b => b.style.display = 'flex');
     });
 };
