@@ -1,48 +1,78 @@
-* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: #1a1a1a; color: white; margin: 0; display: flex; justify-content: center; }
-
-.container { display: flex; padding: 20px; gap: 30px; max-width: 1200px; width: 100%; }
-
-/* Sidebar Controls */
-.controls { width: 300px; background: #252525; padding: 20px; border-radius: 15px; height: fit-content; }
-.control-section { margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-h2, h3 { margin-top: 0; color: #00d4ff; }
-h3 { font-size: 14px; text-transform: uppercase; }
-
-.btn-upload {
-    display: block; background: #00d4ff; color: black; padding: 12px;
-    text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold;
-}
-.btn-upload input { display: none; }
-.download-btn {
-    width: 100%; padding: 15px; background: #2ecc71; border: none;
-    color: white; font-weight: bold; border-radius: 8px; cursor: pointer;
+:root {
+    --bg-main: #0f0f11;
+    --bg-side: #18181b;
+    --accent: #3b82f6;
+    --text: #e4e4e7;
 }
 
-/* Edit Panel */
-.edit-panel label { display: block; margin-top: 10px; font-size: 12px; }
-.edit-panel input { width: 100%; cursor: pointer; }
-
-/* Area Preview */
-.preview-area { flex: 1; display: flex; justify-content: center; align-items: flex-start; }
-.photo-strip {
-    position: relative; width: 380px; height: 570px; /* Rasio 4R */
-    background: white; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+body {
+    background-color: var(--bg-main);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    margin: 0;
+    overflow: hidden;
 }
 
-#photoContainer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-#templateOverlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 10; pointer-events: none; object-fit: fill; display: none;
+.app-wrapper { display: flex; height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+    width: 320px;
+    background: var(--bg-side);
+    padding: 24px;
+    border-right: 1px solid #27272a;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow-y: auto;
 }
 
-/* Kotak Foto */
-.photo-box {
-    position: absolute; overflow: hidden; background: #333;
-    cursor: move; border: 0.5px dashed rgba(255,255,255,0.2);
+.brand h1 { margin: 0; font-size: 20px; font-weight: 800; }
+.brand h1 span { color: var(--accent); }
+.brand p { margin: 4px 0 0; font-size: 11px; color: #71717a; }
+
+.section-title { font-size: 10px; font-weight: 700; color: #a1a1aa; letter-spacing: 1px; display: block; margin-bottom: 12px; }
+
+.upload-label {
+    display: flex; align-items: center; justify-content: center;
+    background: #27272a; border: 2px dashed #3f3f46;
+    padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
 }
+.upload-label:hover { border-color: var(--accent); background: #2d2d33; }
+.upload-label input { display: none; }
+
+/* Editor Sliders */
+.slider-item { margin-bottom: 16px; }
+.slider-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.slider-info b { color: var(--accent); }
+input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent); }
+
+.primary-btn {
+    width: 100%; padding: 14px; background: var(--accent); color: white;
+    border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s;
+}
+.primary-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+/* Viewport Area */
+.viewport { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; background: #09090b; }
+
+.canvas-print {
+    position: relative;
+    width: 380px; height: 570px; /* Rasio 4R */
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+#photoContainer { position: absolute; inset: 0; z-index: 1; }
+#templateOverlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; object-fit: fill; display: none; }
+
+/* Photo Box */
+.photo-box { position: absolute; overflow: hidden; background: #27272a; cursor: move; }
 .photo-box img {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%); width: 105%; height: auto;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: auto;
+    transform-origin: center center;
     user-select: none;
+    -webkit-user-drag: none;
 }
