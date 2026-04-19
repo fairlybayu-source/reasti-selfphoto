@@ -193,4 +193,53 @@ document.getElementById('downloadBtn').onclick = () => {
         link.click();
         btn.innerText = '💾 SIMPAN HASIL HD';
     });
+    // ... (Bagian awal Scan Template tetap sama)
+
+function triggerImageUpload(box) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = document.createElement('img');
+            img.src = ev.target.result;
+            img.dataset.scale = 1; img.dataset.bright = 100;
+            img.dataset.contrast = 100; img.dataset.sat = 100;
+            img.dataset.x = 0; img.dataset.y = 0;
+
+            box.innerHTML = '';
+            box.appendChild(img);
+
+            // TAMBAHKAN TOMBOL HAPUS (X)
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-photo-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = (event) => {
+                event.stopPropagation();
+                box.innerHTML = ''; // Hapus isi kotak (foto & tombol)
+                activeImg = null;
+                editPanel.style.display = 'none';
+            };
+            box.appendChild(removeBtn);
+
+            selectPhoto(img);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+    input.click();
+}
+
+// FITUR PRINT OTOMATIS
+document.getElementById('printBtn').onclick = () => {
+    // Pastikan area bersih dari seleksi (border biru) sebelum cetak
+    document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
+    
+    // Memberi sedikit jeda agar UI update sebelum dialog print muncul
+    setTimeout(() => {
+        window.print();
+    }, 100);
+};
+
+// ... (Sisa fungsi Drag & Download tetap sama)
 };
