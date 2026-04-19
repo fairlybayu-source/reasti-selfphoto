@@ -60,7 +60,19 @@ function detectTransparentAreas(imgSource) {
 function createPhotoBox(x, y, w, h) {
     const box = document.createElement('div');
     box.className = 'photo-box';
-    box.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px;`;
+    
+    // OFFSET PRESISI: 
+    // Kita kurangi x & y sebesar 1px, dan tambah w & h sebesar 2px
+    // Ini memastikan foto "masuk" sedikit ke bawah area berwarna templat
+    const gapFix = 1; 
+    
+    box.style.cssText = `
+        left: ${x - gapFix}px; 
+        top: ${y - gapFix}px; 
+        width: ${w + (gapFix * 2)}px; 
+        height: ${h + (gapFix * 2)}px;
+    `;
+    
     box.onclick = (e) => {
         if (e.target.classList.contains('remove-photo-btn')) return;
         const img = box.querySelector('img');
