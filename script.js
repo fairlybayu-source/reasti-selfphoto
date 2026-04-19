@@ -6,7 +6,7 @@ let activeImg = null;
 let isDragging = false;
 let startX, startY, initX, initY;
 
-// SCAN TEMPLATE
+// SCAN TEMPLATE ENGINE
 document.getElementById('magicScan').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -27,26 +27,26 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
 function detectTransparentAreas(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 380; canvas.height = 570;
-    ctx.drawImage(imgSource, 0, 0, 380, 570);
-    const pixelData = ctx.getImageData(0, 0, 380, 570).data;
-    const visited = new Uint8Array(380 * 570);
+    canvas.width = 384; canvas.height = 576;
+    ctx.drawImage(imgSource, 0, 0, 384, 576);
+    const pixelData = ctx.getImageData(0, 0, 384, 576).data;
+    const visited = new Uint8Array(384 * 576);
 
-    for (let y = 0; y < 570; y += 4) {
-        for (let x = 0; x < 380; x += 4) {
-            const idx = (y * 380 + x) * 4;
-            if (pixelData[idx + 3] < 50 && !visited[y * 380 + x]) {
+    for (let y = 0; y < 576; y += 4) {
+        for (let x = 0; x < 384; x += 4) {
+            const idx = (y * 384 + x) * 4;
+            if (pixelData[idx + 3] < 50 && !visited[y * 384 + x]) {
                 let xMin = x, xMax = x, yMin = y, yMax = y;
                 let stack = [[x, y]];
-                visited[y * 380 + x] = 1;
+                visited[y * 384 + x] = 1;
                 while(stack.length > 0) {
                     let [cx, cy] = stack.pop();
                     xMin = Math.min(xMin, cx); xMax = Math.max(xMax, cx);
                     yMin = Math.min(yMin, cy); yMax = Math.max(yMax, cy);
                     [[cx+4, cy], [cx, cy+4]].forEach(([nx, ny]) => {
-                        if (nx < 380 && ny < 570 && !visited[ny * 380 + nx]) {
-                            if (pixelData[(ny * 380 + nx) * 4 + 3] < 50) {
-                                visited[ny * 380 + nx] = 1; stack.push([nx, ny]);
+                        if (nx < 384 && ny < 576 && !visited[ny * 384 + nx]) {
+                            if (pixelData[(ny * 384 + nx) * 4 + 3] < 50) {
+                                visited[ny * 384 + nx] = 1; stack.push([nx, ny]);
                             }
                         }
                     });
@@ -132,7 +132,7 @@ function applyStyles() {
     activeImg.style.filter = `brightness(${d.bright}%) contrast(${d.contrast}%) saturate(${d.sat}%)`;
 }
 
-// DRAG LOGIC
+// DRAG SYSTEM
 window.addEventListener('mousedown', (e) => {
     if (e.target.classList.contains('remove-photo-btn')) return;
     if (e.target.tagName === 'IMG' && e.target.parentElement.classList.contains('photo-box')) {
@@ -152,7 +152,7 @@ window.addEventListener('mousemove', (e) => {
 
 window.addEventListener('mouseup', () => isDragging = false);
 
-// PRINT & DOWNLOAD
+// PRINT & DOWNLOAD ENGINE
 document.getElementById('printBtn').onclick = () => {
     document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
     window.print();
