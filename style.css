@@ -31,38 +31,7 @@ body {
 .brand p { margin: 4px 0 0; font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
 
 .section-title { font-size: 10px; font-weight: 700; color: #444; letter-spacing: 2px; display: block; margin-bottom: 12px; }
-/* --- PERBAIKAN PRINT KOSONG --- */
-@media print {
-    /* Sembunyikan segalanya */
-    body * { 
-        visibility: hidden; 
-        -webkit-print-color-adjust: exact !important; 
-        print-color-adjust: exact !important;
-    }
-    
-    /* Tampilkan hanya capture area */
-    #captureArea, #captureArea * { 
-        visibility: visible; 
-    }
-    
-    #captureArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 102mm;
-        height: 152mm;
-        margin: 0;
-        padding: 0;
-        box-shadow: none !important;
-        background: white !important;
-    }
 
-    /* Hilangkan Header/Footer bawaan browser (Link & Tanggal) */
-    @page {
-        size: 102mm 152mm;
-        margin: 0;
-    }
-}
 .upload-label {
     display: flex; align-items: center; justify-content: center;
     background: #1a1a1c; border: 1px solid #333;
@@ -71,22 +40,20 @@ body {
 
 .action-buttons { display: flex; flex-direction: column; gap: 10px; }
 
-.primary-btn {
-    width: 100%; padding: 15px; background: var(--accent); color: #000;
-    border: none; border-radius: 8px; font-weight: 800; cursor: pointer;
+.primary-btn, .print-btn {
+    width: 100%; padding: 15px; border: none; border-radius: 8px; 
+    font-weight: 800; cursor: pointer; transition: 0.2s;
 }
 
-.print-btn {
-    width: 100%; padding: 15px; background: #ffffff; color: #000;
-    border: none; border-radius: 8px; font-weight: 800; cursor: pointer;
-}
+.primary-btn { background: var(--accent); color: #000; }
+.print-btn { background: #ffffff; color: #000; }
+.print-btn:hover { background: #e0e0e0; }
 
 .viewport { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); }
 
-/* AREA CETAK 4R (4x6 Inch) */
 .canvas-print {
     position: relative;
-    width: 384px; height: 576px; /* Rasio 4R dalam px */
+    width: 384px; height: 576px; /* Rasio 4R */
     background: #fff;
     box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
 }
@@ -100,7 +67,6 @@ body {
     transform-origin: center center; z-index: 2;
 }
 
-/* TOMBOL SILANG HAPUS */
 .remove-photo-btn {
     position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
     background: var(--danger); color: white; border: 2px solid white;
@@ -110,20 +76,21 @@ body {
 
 .photo-box:hover .remove-photo-btn { display: flex; }
 
-/* KUSTOMISASI PRINT EPSON L8050 */
+/* --- SETTING PRINT EPSON L8050 (4R) --- */
 @media print {
     @page {
-        size: 102mm 152mm; /* 4R Exact */
+        size: 102mm 152mm;
         margin: 0;
     }
-    body { background: white !important; }
-    .sidebar, .remove-photo-btn, .viewport { display: none !important; }
-    .app-wrapper { display: block; }
-    .canvas-print {
+    body * { visibility: hidden; }
+    #captureArea, #captureArea * { visibility: visible; }
+    #captureArea {
         position: fixed;
         left: 0; top: 0;
         width: 102mm;
         height: 152mm;
         box-shadow: none !important;
+        z-index: 9999;
     }
+    .remove-photo-btn { display: none !important; }
 }
