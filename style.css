@@ -1,22 +1,21 @@
 :root {
     --bg-main: #0a0a0c;
     --bg-side: #121214;
-    --accent: #00ff88; /* Hijau Neon Modern */
+    --accent: #00ff88;
     --text: #ffffff;
-    --danger: #ff4757; /* Merah untuk Hapus */
+    --danger: #ff4757;
 }
 
 body {
     background-color: var(--bg-main);
     color: var(--text);
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     overflow: hidden;
 }
 
 .app-wrapper { display: flex; height: 100vh; }
 
-/* Sidebar Layout */
 .sidebar {
     width: 320px;
     background: var(--bg-side);
@@ -25,107 +24,34 @@ body {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    overflow-y: auto;
 }
 
-/* Branding */
 .brand h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -1px; }
 .brand h1 span { color: var(--accent); }
 .brand p { margin: 4px 0 0; font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
 
 .section-title { font-size: 10px; font-weight: 700; color: #444; letter-spacing: 2px; display: block; margin-bottom: 12px; }
 
-/* Tombol Upload Template */
 .upload-label {
     display: flex; align-items: center; justify-content: center;
     background: #1a1a1c; border: 1px solid #333;
     padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
 }
-.upload-label:hover { border-color: var(--accent); color: var(--accent); }
-.upload-label input { display: none; }
 
-/* Editor Sliders */
-.slider-item { margin-bottom: 18px; }
-.slider-info { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; color: #aaa; }
-.slider-info b { color: var(--accent); }
-input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent); }
+.action-buttons { display: flex; flex-direction: column; gap: 10px; }
 
-/* Tombol Ekspor */
 .primary-btn {
     width: 100%; padding: 15px; background: var(--accent); color: #000;
-    border: none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s;
-    /* Gaya tombol baru */
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    border: none; border-radius: 8px; font-weight: 800; cursor: pointer;
 }
 
 .print-btn {
-    width: 100%;
-    padding: 12px;
-    background: #ffffff;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
+    width: 100%; padding: 15px; background: #ffffff; color: #000;
+    border: none; border-radius: 8px; font-weight: 800; cursor: pointer;
 }
 
-.print-btn:hover { background: #e2e2e2; }
+.viewport { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); }
 
-/* CSS KHUSUS UNTUK PRINT */
-@media print {
-    body * { visibility: hidden; }
-    #captureArea, #captureArea * { visibility: visible; }
-    #captureArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 10cm; /* Ukuran standar 4R */
-        height: 15cm;
-        box-shadow: none;
-    }
-    .remove-photo-btn { display: none !important; }
-}
-
-/* Tombol Silang Hapus */
-.remove-photo-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 22px;
-    height: 22px;
-    background: #ff4757;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: 0.2s;
-}
-
-.photo-box:hover .remove-photo-btn { opacity: 1; }
-}
-.primary-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
-
-/* Viewport Area */
-.viewport { 
-    flex: 1; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); 
-}
-
-/* Kanvas Cetak (Rasio 4R) */
 .canvas-print {
     position: relative;
     width: 380px; height: 570px;
@@ -134,38 +60,28 @@ input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent);
 }
 
 #photoContainer { position: absolute; inset: 0; z-index: 1; }
-#templateOverlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; object-fit: fill; display: none; }
+#templateOverlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; object-fit: fill; }
 
-/* Kotak Foto */
-.photo-box { 
-    position: absolute; 
-    overflow: hidden; 
-    background: #000; 
-    cursor: move; 
-}
+.photo-box { position: absolute; overflow: hidden; background: #000; cursor: move; }
 .photo-box img {
     position: absolute; top: 0; left: 0; width: 100%; height: auto;
-    transform-origin: center center; user-select: none; z-index: 2;
+    transform-origin: center center; z-index: 2;
 }
 
-/* Tombol Silang Hapus (X) */
+/* TOMBOL SILANG HAPUS */
 .remove-photo-btn {
-    position: absolute; 
-    top: 8px; right: 8px; 
-    width: 24px; height: 24px;
-    background: var(--danger); 
-    color: white; 
-    border: none; 
-    border-radius: 50%;
-    font-size: 16px; font-weight: bold; 
-    cursor: pointer; 
-    z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: 0.2s; /* Sembunyi secara default */
+    position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
+    background: var(--danger); color: white; border: 2px solid white;
+    border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer;
+    z-index: 999; display: none; align-items: center; justify-content: center;
 }
 
-/* Tampilkan tombol hapus saat kotak foto di-hover mouse */
-.photo-box:hover .remove-photo-btn { opacity: 1; }
+.photo-box:hover .remove-photo-btn { display: flex; }
 
-/* Pastikan tombol hapus tidak ikut ter-render di hasil HD */
-.canvas-print .remove-photo-btn { display: none !important; }
+/* ATURAN CETAK */
+@media print {
+    .sidebar, .remove-photo-btn { display: none !important; }
+    body { background: white; }
+    .viewport { padding: 0; }
+    .canvas-print { box-shadow: none; position: absolute; left: 0; top: 0; }
+}
