@@ -54,6 +54,65 @@ input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent);
 .primary-btn {
     width: 100%; padding: 15px; background: var(--accent); color: #000;
     border: none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s;
+    /* Gaya tombol baru */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.print-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ffffff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.print-btn:hover { background: #e2e2e2; }
+
+/* CSS KHUSUS UNTUK PRINT */
+@media print {
+    body * { visibility: hidden; }
+    #captureArea, #captureArea * { visibility: visible; }
+    #captureArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 10cm; /* Ukuran standar 4R */
+        height: 15cm;
+        box-shadow: none;
+    }
+    .remove-photo-btn { display: none !important; }
+}
+
+/* Tombol Silang Hapus */
+.remove-photo-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.photo-box:hover .remove-photo-btn { opacity: 1; }
 }
 .primary-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
 
