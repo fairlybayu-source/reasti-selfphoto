@@ -21,7 +21,19 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
             detectTransparentAreas(img);
         };
     };
-    reader.readAsDataURL(file);
+    const url = URL.createObjectURL(file);
+
+const img = new Image();
+
+img.onload = () => {
+
+    ...
+
+    URL.revokeObjectURL(url);
+
+};
+
+img.src = url;
 });
 
 function detectTransparentAreas(imgSource) {
@@ -187,8 +199,12 @@ document.getElementById('printBtn').onclick = () => {
     setTimeout(() => {
         window.print();
     }, 500);
-};
 
+const ctx = canvas.getContext("2d");
+
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = "high";
+    };
 // DOWNLOAD ENGINE
 document.getElementById('downloadBtn').onclick = () => {
     const btn = document.getElementById('downloadBtn');
@@ -197,8 +213,16 @@ document.getElementById('downloadBtn').onclick = () => {
     xBtns.forEach(b => b.style.display = 'none');
     document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
 
-    html2canvas(document.getElementById('captureArea'), { 
-        scale: 4, 
+   const ratio =
+templateOverlay.naturalWidth /
+captureArea.clientWidth;
+
+html2canvas(captureArea,{
+    scale:ratio,
+    useCORS:true,
+    backgroundColor:null,
+    imageTimeout:0
+}); 
         useCORS: true,
         logging: false
     }).then(canvas => {
