@@ -27,26 +27,35 @@ document.getElementById('magicScan').addEventListener('change', function(e) {
 function detectTransparentAreas(imgSource) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 384; canvas.height = 576;
-    ctx.drawImage(imgSource, 0, 0, 384, 576);
-    const pixelData = ctx.getImageData(0, 0, 384, 576).data;
-    const visited = new Uint8Array(384 * 576);
+    canvas.width = imgSource.naturalWidth;
+canvas.height = imgSource.naturalHeight;
 
-    for (let y = 0; y < 576; y += 4) {
-        for (let x = 0; x < 384; x += 4) {
-            const idx = (y * 384 + x) * 4;
+ctx.drawImage(
+    imgSource,
+    0,
+    0,
+    imgSource.naturalWidth,
+    imgSource.naturalHeight
+);
+
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+
+    for (let y = 0; y < HEIGHT; y += 4) {
+        for (let x = 0; x < WIDTH; x += 4) {
+            const idx = (y * WIDTH + x) * 4;
             if (pixelData[idx + 3] < 50 && !visited[y * 384 + x]) {
                 let xMin = x, xMax = x, yMin = y, yMax = y;
                 let stack = [[x, y]];
-                visited[y * 384 + x] = 1;
+                visited[y * WIDTH + x] = 1;
                 while(stack.length > 0) {
                     let [cx, cy] = stack.pop();
                     xMin = Math.min(xMin, cx); xMax = Math.max(xMax, cx);
                     yMin = Math.min(yMin, cy); yMax = Math.max(yMax, cy);
                     [[cx+4, cy], [cx, cy+4]].forEach(([nx, ny]) => {
-                        if (nx < 384 && ny < 576 && !visited[ny * 384 + nx]) {
-                            if (pixelData[(ny * 384 + nx) * 4 + 3] < 50) {
-                                visited[ny * 384 + nx] = 1; stack.push([nx, ny]);
+                        if (nx < WIDTH && ny < HEIGHT && !visited[ny * WIDTH + nx]) {
+                            if (pixelData[(ny * WIDTH + nx) * 4 + 3] < 50) {
+                                visited[ny * WIDTH + nx] = 1; stack.push([nx, ny]);
                             }
                         }
                     });
