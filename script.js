@@ -213,7 +213,9 @@ document.getElementById('downloadBtn').onclick = () => {
     xBtns.forEach(b => b.style.display = 'none');
     document.querySelectorAll('.photo-box').forEach(b => b.style.outline = 'none');
 
-   const ratio =
+const captureArea=document.getElementById("captureArea");
+
+const ratio =
 templateOverlay.naturalWidth /
 captureArea.clientWidth;
 
@@ -221,16 +223,21 @@ html2canvas(captureArea,{
     scale:ratio,
     useCORS:true,
     backgroundColor:null,
-    imageTimeout:0
-}); 
-        useCORS: true,
-        logging: false
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `REASTIC_STUDIO_${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        btn.innerText = '💾 SIMPAN HASIL HD';
-        xBtns.forEach(b => b.style.display = 'flex');
-    });
+    imageTimeout:0,
+    logging:false
+}).then(canvas=>{
+
+    const link=document.createElement("a");
+
+    link.download=`REASTIC_STUDIO_${Date.now()}.png`;
+
+    link.href=canvas.toDataURL("image/png");
+
+    link.click();
+
+    btn.innerText="💾 SIMPAN HASIL HD";
+
+    xBtns.forEach(b=>b.style.display="flex");
+
+});
 };
