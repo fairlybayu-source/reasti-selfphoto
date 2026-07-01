@@ -68,8 +68,18 @@ body {
 
 .photo-box { position: absolute; overflow: hidden; background: #000; cursor: move; }
 .photo-box img {
-    position: absolute; top: 0; left: 0; width: 100%; height: auto;
-    transform-origin: center center; z-index: 2;
+ .photo-box img{
+    position:absolute;
+    width:auto;
+    height:auto;
+    max-width:none;
+    max-height:none;
+    transform-origin:center;
+}
+    image-rendering:auto;
+backface-visibility:hidden;
+-webkit-backface-visibility:hidden;
+transform:translateZ(0);
 }
 
 .remove-photo-btn {
