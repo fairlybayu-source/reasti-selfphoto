@@ -38,6 +38,9 @@ body {
     padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
 }
 
+.slider-item { margin-bottom: 15px; }
+.slider-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+
 .action-buttons { display: flex; flex-direction: column; gap: 10px; }
 
 .primary-btn, .print-btn {
@@ -49,16 +52,13 @@ body {
 .print-btn { background: #ffffff; color: #000; }
 .print-btn:hover { background: #e0e0e0; }
 
-.viewport { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); }
+.viewport { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1c 0%, #0a0a0c 100%); overflow: auto; }
 
+/* Perbaikan Dimensi Area Cetak */
 .canvas-print {
     position: relative;
-    .canvas-print{
-    width:1200px;
-    height:1800px;
-    transform:scale(.32);
-    transform-origin:top left;
-}; /* Rasio 4R */
+    width: 600px;  /* Skala preview yang ramah monitor layar */
+    height: 900px; /* Rasio 4R tetap terjaga (2:3) */
     background: #fff;
     box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
 }
@@ -67,19 +67,17 @@ body {
 #templateOverlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; object-fit: fill; }
 
 .photo-box { position: absolute; overflow: hidden; background: #000; cursor: move; }
+
+/* Perbaikan Selector Terbuka */
 .photo-box img {
- .photo-box img{
-    position:absolute;
-    width:auto;
-    height:auto;
-    max-width:none;
-    max-height:none;
-    transform-origin:center;
-}
-    image-rendering:auto;
-backface-visibility:hidden;
--webkit-backface-visibility:hidden;
-transform:translateZ(0);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center;
+    image-rendering: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .remove-photo-btn {
@@ -91,7 +89,7 @@ transform:translateZ(0);
 
 .photo-box:hover .remove-photo-btn { display: flex; }
 
-/* --- SETTING PRINT EPSON L8050 (4R) --- */
+/* --- PRINT MANAGEMENT --- */
 @media print {
     @page {
         size: 102mm 152mm;
