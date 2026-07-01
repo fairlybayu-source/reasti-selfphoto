@@ -56,7 +56,7 @@ const HEIGHT = canvas.height;
     for (let y = 0; y < HEIGHT; y += 4) {
         for (let x = 0; x < WIDTH; x += 4) {
             const idx = (y * WIDTH + x) * 4;
-            if (pixelData[idx + 3] < 50 && !visited[y * 384 + x]) {
+            if (pixelData[idx + 3] < 50 && !visited[y * WIDTH + x]) {
                 let xMin = x, xMax = x, yMin = y, yMax = y;
                 let stack = [[x, y]];
                 visited[y * WIDTH + x] = 1;
